@@ -1,7 +1,5 @@
 # config
-After installing Go and setting up your GOPATH, create your first .go file. We'll call it server.go.
-
-
+example
 ```
 package main
 import (
