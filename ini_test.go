@@ -10,9 +10,10 @@ var iniContext = `
 #sdfs
 test=sdf
 [test]
-h=hello#123
+h=hello
 t=test
 i=12
+te tst
 m
 [test1]
 `
@@ -50,5 +51,9 @@ func TestIni(t *testing.T) {
 	m, _ := iniConfig.String("test", "m")
 	if m != "" {
 		t.Fatal("t shoud be ")
+	}
+	te, _ := iniConfig.String("test", "te")
+	if te != "tst" {
+		t.Fatal("t shoud be tst")
 	}
 }
