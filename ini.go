@@ -17,11 +17,11 @@ var (
 	gLineBreak       = byte('\n')
 )
 
-type IniConfig struct{}
+type iniConfig struct{}
 
-var gIniConfig IniConfig
+var gIniConfig iniConfig
 
-func (p *IniConfig) ParseFile(name string) (ConfigContainer, error) {
+func (p *iniConfig) ParseFile(name string) (ConfigContainer, error) {
 	file, err := os.Open(name)
 	if err != nil {
 		return nil, errors.New("config file not exist:")
@@ -36,9 +36,9 @@ func (p *IniConfig) ParseFile(name string) (ConfigContainer, error) {
 	sKeyValueRegexp := regexp.MustCompile(gKeyValueRegular)
 	sKeyRegexp := regexp.MustCompile(gKeyRegular)
 
-	cfg := &IniConfigContainer{data: make(map[string]Section)}
+	cfg := &iniConfigContainer{data: make(map[string]section)}
 	buf := bufio.NewReader(file)
-	var section string
+	var sectionName string
 	for {
 		line, err := buf.ReadString(gLineBreak)
 		if err == io.EOF {
@@ -52,22 +52,22 @@ func (p *IniConfig) ParseFile(name string) (ConfigContainer, error) {
 
 		matchs := sSectionRegexp.FindStringSubmatch(line)
 		if len(matchs) == 2 {
-			section = matchs[1]
-			cfg.data[section] = make(Section)
+			sectionName = matchs[1]
+			cfg.data[sectionName] = make(section)
 			continue
 		}
 
 		matchs = sKeyValueRegexp.FindStringSubmatch(line)
 		if len(matchs) == 3 {
-			if cfg.data[section] != nil {
-				cfg.data[section][matchs[1]] = matchs[2]
+			if cfg.data[sectionName] != nil {
+				cfg.data[sectionName][matchs[1]] = matchs[2]
 			}
 			continue
 		}
 
 		matchs = sKeyRegexp.FindStringSubmatch(line)
 		if len(matchs) == 2 {
-			cfg.data[section][matchs[1]] = ""
+			cfg.data[sectionName][matchs[1]] = ""
 			continue
 		}
 	}
@@ -75,18 +75,18 @@ func (p *IniConfig) ParseFile(name string) (ConfigContainer, error) {
 }
 
 //container
-type IniConfigContainer struct {
-	data map[string]Section
+type iniConfigContainer struct {
+	data map[string]section
 }
 
-func (p *IniConfigContainer) Section(section string) (Sectioner, error) {
+func (p *iniConfigContainer) Section(section string) (Sectioner, error) {
 	if m, ok := p.data[section]; ok {
 		return &m, nil
 	}
 
 	return nil, errors.New("no such section")
 }
-func (p *IniConfigContainer) Int(section, key string) (int, error) {
+func (p *iniConfigContainer) Int(section, key string) (int, error) {
 	s, err := p.Section(section)
 	if err != nil {
 		return 0, err
@@ -95,7 +95,7 @@ func (p *IniConfigContainer) Int(section, key string) (int, error) {
 	return s.Int(key)
 }
 
-func (p *IniConfigContainer) String(section, key string) (string, error) {
+func (p *iniConfigContainer) String(section, key string) (string, error) {
 	s, err := p.Section(section)
 	if err != nil {
 		return "", err
@@ -103,7 +103,7 @@ func (p *IniConfigContainer) String(section, key string) (string, error) {
 
 	return s.String(key)
 }
-func (p *IniConfigContainer) Float64(section, key string) (float64, error) {
+func (p *iniConfigContainer) Float64(section, key string) (float64, error) {
 	s, err := p.Section(section)
 	if err != nil {
 		return 0, err
@@ -113,16 +113,16 @@ func (p *IniConfigContainer) Float64(section, key string) (float64, error) {
 }
 
 //section
-type Section map[string]string
+type section map[string]string
 
-func (p *Section) String(key string) (string, error) {
+func (p *section) String(key string) (string, error) {
 	if v, ok := (*p)[key]; ok {
 		return v, nil
 	}
 
 	return "", errors.New("no suck key")
 }
-func (p *Section) Float64(key string) (float64, error) {
+func (p *section) Float64(key string) (float64, error) {
 	if v, ok := (*p)[key]; ok {
 		return strconv.ParseFloat(v, 64)
 
@@ -130,7 +130,7 @@ func (p *Section) Float64(key string) (float64, error) {
 
 	return 0, errors.New("no suck key")
 }
-func (p *Section) Int(key string) (int, error) {
+func (p *section) Int(key string) (int, error) {
 	if v, ok := (*p)[key]; ok {
 		return strconv.Atoi(v)
 	}
