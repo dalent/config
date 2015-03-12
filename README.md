@@ -1,4 +1,15 @@
 # config
+like this 
+```
+[server]
+name=test
+
+[db]
+addr = localhost
+
+[test]
+h=123
+```
 example
 ```
 package main
