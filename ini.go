@@ -21,7 +21,7 @@ type iniConfig struct{}
 
 var gIniConfig iniConfig
 
-func (p *iniConfig) ParseFile(name string) (ConfigContainer, error) {
+func (p *iniConfig) parseFile(name string) (configContainer, error) {
 	file, err := os.Open(name)
 	if err != nil {
 		return nil, errors.New("config file not exist:")
@@ -79,14 +79,14 @@ type iniConfigContainer struct {
 	data map[string]section
 }
 
-func (p *iniConfigContainer) Section(section string) (Sectioner, error) {
+func (p *iniConfigContainer) Section(section string) (sectioner, error) {
 	if m, ok := p.data[section]; ok {
 		return &m, nil
 	}
 
 	return nil, errors.New("no such section")
 }
-func (p *iniConfigContainer) Int(section, key string) (int, error) {
+func (p *iniConfigContainer) Int(section, key string) (int64, error) {
 	s, err := p.Section(section)
 	if err != nil {
 		return 0, err
@@ -130,9 +130,9 @@ func (p *section) Float64(key string) (float64, error) {
 
 	return 0, errors.New("no suck key")
 }
-func (p *section) Int(key string) (int, error) {
+func (p *section) Int(key string) (int64, error) {
 	if v, ok := (*p)[key]; ok {
-		return strconv.Atoi(v)
+		return string2int(v)
 	}
 
 	return 0, errors.New("no suck key")

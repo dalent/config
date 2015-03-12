@@ -2,27 +2,27 @@ package config
 
 import "errors"
 
-type Sectioner interface {
-	Int(key string) (int, error)
+type sectioner interface {
+	Int(key string) (int64, error)
 	String(key string) (string, error)
 	Float64(key string) (float64, error)
 }
 
-type ConfigContainer interface {
-	Int(section, key string) (int, error)
+type configContainer interface {
+	Int(section, key string) (int64, error)
 	String(section, key string) (string, error)
 	Float64(section, key string) (float64, error)
-	Section(section string) (Sectioner, error)
+	Section(section string) (sectioner, error)
 }
 
-type Configer interface {
-	ParseFile(name string) (ConfigContainer, error)
+type configer interface {
+	parseFile(name string) (configContainer, error)
 }
 
 //type  ini
-var adapters = make(map[string]Configer)
+var adapters = make(map[string]configer)
 
-func Register(name string, config Configer) {
+func Register(name string, config configer) {
 	if config == nil {
 		panic("config nil:" + name)
 	}
@@ -33,11 +33,11 @@ func Register(name string, config Configer) {
 	adapters[name] = config
 }
 
-func NewConfiger(adpaterName string, fileName string) (ConfigContainer, error) {
+func NewConfiger(adpaterName string, fileName string) (configContainer, error) {
 	adpater, ok := adapters[adpaterName]
 	if !ok {
 		return nil, errors.New("no such type config ")
 	}
 
-	return adpater.ParseFile(fileName)
+	return adpater.parseFile(fileName)
 }
