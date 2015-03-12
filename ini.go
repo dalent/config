@@ -21,7 +21,7 @@ type iniConfig struct{}
 
 var gIniConfig iniConfig
 
-func (p *iniConfig) parseFile(name string) (configContainer, error) {
+func (p *iniConfig) parseFile(name string) (ConfigContainer, error) {
 	file, err := os.Open(name)
 	if err != nil {
 		return nil, errors.New("config file not exist:")
@@ -79,7 +79,7 @@ type iniConfigContainer struct {
 	data map[string]section
 }
 
-func (p *iniConfigContainer) Section(section string) (sectioner, error) {
+func (p *iniConfigContainer) Section(section string) (Sectioner, error) {
 	if m, ok := p.data[section]; ok {
 		return &m, nil
 	}

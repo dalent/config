@@ -2,21 +2,21 @@ package config
 
 import "errors"
 
-type sectioner interface {
+type Sectioner interface {
 	Int(key string) (int64, error)
 	String(key string) (string, error)
 	Float64(key string) (float64, error)
 }
 
-type configContainer interface {
+type ConfigContainer interface {
 	Int(section, key string) (int64, error)
 	String(section, key string) (string, error)
 	Float64(section, key string) (float64, error)
-	Section(section string) (sectioner, error)
+	Section(section string) (Sectioner, error)
 }
 
 type configer interface {
-	parseFile(name string) (configContainer, error)
+	parseFile(name string) (ConfigContainer, error)
 }
 
 //type  ini
@@ -33,7 +33,7 @@ func Register(name string, config configer) {
 	adapters[name] = config
 }
 
-func NewConfiger(adpaterName string, fileName string) (configContainer, error) {
+func NewConfiger(adpaterName string, fileName string) (ConfigContainer, error) {
 	adpater, ok := adapters[adpaterName]
 	if !ok {
 		return nil, errors.New("no such type config ")
