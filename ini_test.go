@@ -13,7 +13,7 @@ test=sdf
 h=hello
 t=test
 i=12
-te tst
+te tst=123
 m
 [test1]
 `
@@ -53,7 +53,7 @@ func TestIni(t *testing.T) {
 		t.Fatal("t shoud be ")
 	}
 	te, _ := iniConfig.String("test", "te")
-	if te != "tst" {
-		t.Fatal("t shoud be tst")
+	if te != "tst=123" {
+		t.Fatal("t shoud be tst:" + te)
 	}
 }

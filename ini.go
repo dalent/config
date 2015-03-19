@@ -12,7 +12,7 @@ import (
 var (
 	gCommentRegular  = `^[ \t]*[;#]`
 	gSectionRegular  = `^[ \t]*\[(.*)\][ \t]*`
-	gKeyValueRegular = `^[ \t]*([^ =\t]+)[ \t=]+([^ =\t\n]+)`
+	gKeyValueRegular = `^[ \t]*([^ =\t]+)[ \t=]+([^ \t\n]+)`
 	gKeyRegular      = `^[ \t]*([^ =\t\n]+)`
 	gLineBreak       = byte('\n')
 )
