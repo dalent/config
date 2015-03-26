@@ -3,13 +3,13 @@ package config
 import "errors"
 
 type Sectioner interface {
-	Int(key string) (int64, error)
+	Int64(key string) (int64, error)
 	String(key string) (string, error)
 	Float64(key string) (float64, error)
 }
 
 type ConfigContainer interface {
-	Int(section, key string) (int64, error)
+	Int64(section, key string) (int64, error)
 	String(section, key string) (string, error)
 	Float64(section, key string) (float64, error)
 	Section(section string) (Sectioner, error)

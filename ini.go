@@ -86,13 +86,13 @@ func (p *iniConfigContainer) Section(section string) (Sectioner, error) {
 
 	return nil, errors.New("no such section")
 }
-func (p *iniConfigContainer) Int(section, key string) (int64, error) {
+func (p *iniConfigContainer) Int64(section, key string) (int64, error) {
 	s, err := p.Section(section)
 	if err != nil {
 		return 0, err
 	}
 
-	return s.Int(key)
+	return s.Int64(key)
 }
 
 func (p *iniConfigContainer) String(section, key string) (string, error) {
@@ -130,7 +130,7 @@ func (p *section) Float64(key string) (float64, error) {
 
 	return 0, errors.New("no suck key")
 }
-func (p *section) Int(key string) (int64, error) {
+func (p *section) Int64(key string) (int64, error) {
 	if v, ok := (*p)[key]; ok {
 		return string2int(v)
 	}

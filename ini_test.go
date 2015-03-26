@@ -39,7 +39,7 @@ func TestIni(t *testing.T) {
 		t.Fatal("h shoud be hello")
 	}
 
-	i, _ := iniConfig.Int("test", "i")
+	i, _ := iniConfig.Int64("test", "i")
 	if i != 12 {
 		t.Fatal("i shoud be 12")
 	}
